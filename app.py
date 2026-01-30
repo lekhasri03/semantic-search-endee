@@ -43,7 +43,7 @@ def cosine_similarity(a, b):
     return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))
 
 
-def semantic_search(query, top_k=2):
+def semantic_search(query, top_k):
     query_vector = model.encode(query, convert_to_numpy=True)
     results = []
 
@@ -54,6 +54,9 @@ def semantic_search(query, top_k=2):
     results.sort(key=lambda x: x[0], reverse=True)
     return results[:top_k]
 
+# ---------------- SESSION MEMORY ----------------
+
+search_history = []
 
 # ---------------- CLI MENU ----------------
 
@@ -62,24 +65,47 @@ def show_menu():
     print(" Semantic Search System ")
     print("==============================")
     print("1. Search documents")
-    print("2. Exit")
+    print("2. View search history")
+    print("3. Exit")
     print("==============================")
 
 while True:
     show_menu()
-    choice = input("Enter your choice (1/2): ").strip()
+    choice = input("Enter your choice (1/2/3): ").strip()
 
     if choice == "1":
         query = input("\n🔍 Enter your search query: ").strip()
-        results = semantic_search(query)
+
+        try:
+            top_k = int(input("📊 Enter number of results to display: ").strip())
+        except ValueError:
+            print("❌ Please enter a valid number.")
+            continue
+
+        search_history.append(query)
+
+        results = semantic_search(query, top_k)
 
         print("\n📄 Search Results:")
         for i, (score, text) in enumerate(results, start=1):
             print(f"{i}. {text}  (score: {score:.3f})")
 
+        # -------- RAG-READY CONTEXT --------
+        print("\n📌 Retrieved context (for RAG-based answer generation):")
+        for _, text in results:
+            print("-", text)
+
     elif choice == "2":
-        print("\n👋 Exiting Semantic Search. Thank you!")
+        print("\n🕘 Search History:")
+        if not search_history:
+            print("No searches performed yet.")
+        else:
+            for i, q in enumerate(search_history, start=1):
+                print(f"{i}. {q}")
+
+    elif choice == "3":
+        print("\n👋 Exiting Semantic Search System. Goodbye!")
         break
 
     else:
-        print("\n❌ Invalid choice. Please enter 1 or 2.")
+        print("\n❌ Invalid choice. Please select 1, 2, or 3.")
