@@ -1,3 +1,8 @@
 endee
 sentence-transformers
 numpy
+streamlit
+PyPDF2
+sentence-transformers
+numpy
+endee

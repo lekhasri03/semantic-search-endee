@@ -1,67 +1,93 @@
-# Semantic Search using Endee (Vector Database)
+### Semantic Search using Endee (Vector Database)
 
 ##  Project Overview
-This project implements a Semantic Search system that retrieves relevant documents based on meaning rather than exact keywords  
-The system converts text data into vector embeddings and uses Endee as a vector database abstraction to enable similarity-based retrieval.
+This project implements a Semantic Search system for PDF documents that retrieves relevant content based on meaning rather than exact keywords.
 
-This project demonstrates a practical AI/ML use case where vector search is the core component
+Instead of relying on keyword matching, the system converts document text into vector embeddings and performs similarity-based retrieval. Users can upload academic PDFs and search for concepts, definitions, or explanations using natural language queries.
 
+The project focuses on semantic document retrieval, prioritizing correctness, transparency, and explainability over generated answers.
 ---
 
 ##  Problem Statement
-Traditional keyword-based search systems fail when user queries do not exactly match the words present in the documents.
+Traditional keyword-based search systems fail when:
+
+   - The query wording does not exactly match the document text
+
+   - Definitions are expressed differently across documents
+
+   -  Relevant information is spread across multiple sections
 
 Example:
-- Query: *"data structure that stores many elements"*
-- Keyword search may fail if the word *array* is not explicitly present.
 
-This project solves the problem by using semantic similarity, allowing the system to understand the intent of the query.
+- Query: "What is an abstract data type?"
 
+- Keyword search may fail if the exact phrase is not present
+
+- Semantic search can still retrieve relevant explanations discussing ADTs
+This project addresses these limitations by using vector-based semantic similarity.
 ---
 
 ##  Solution Approach
-The solution uses vector embeddings to represent text meaning numerically.  
-Similarity between vectors is calculated to retrieve the most relevant documents.
+The system represents document content and user queries as dense vector embeddings using a transformer-based model. Similarity between embeddings is computed to retrieve the most relevant document pages.
 
+The solution is retrieval-first, meaning:
+
+- It retrieves relevant document sections
+
+- It does not hallucinate or generate new content
+
+- All displayed information comes directly from the source PDFs
 ### High-Level Workflow
-1. Load text documents  
-2. Convert documents into embeddings using a transformer-based model  
-3. Store embeddings using Endee  
-4. Convert user query into an embedding  
-5. Perform similarity comparison  
-6. Return the most relevant results  
+1. Upload one or more PDF documents
+2. Extract and clean text from each page
+3. Convert page-level text into vector embeddings
+4. Convert the user query into an embedding
+5. Compute cosine similarity between query and document embeddings
+6. Retrieve and display the top-k most relevant pages
+7. Generate an extractive summary from retrieved content
 
 ---
 
 ## System Design / Architecture
+The system uses a modular and transparent architecture where vector embeddings are the core component.
 
-The system follows a modular architecture where vector embeddings are the core component. Text documents are converted into numerical embeddings using a transformer-based model. These embeddings are handled using Endee as a vector database abstraction. When a user provides a search query, the query is converted into an embedding and compared with stored document embeddings using cosine similarity to retrieve the most relevant results.
-
-Text Documents
-↓
+PDF Documents
+      ↓
+Text Extraction & Cleaning
+      ↓
 Sentence Transformer (Embeddings)
-↓
+      ↓
 Vector Embeddings
-↓
+      ↓
 Endee (Vector Database Abstraction)
-↓
+      ↓
 Cosine Similarity Search
-↓
-Relevant Documents
-
-
+      ↓
+Relevant Document Pages
+      ↓
+Extractive Summary
 
 
 ##  How Endee is Used
-Endee is used as the vector database abstraction in this project. It is responsible for managing vector-based data within the system. Document embeddings are prepared and stored through Endee during the data ingestion phase.
+Endee is used as a vector database abstraction layer in this project.
 
-Due to API instability in the current Endee version, similarity computation is performed using cosine similarity, which is a standard and widely accepted approach in semantic search systems. Despite this, Endee remains a core component of the architecture for handling vector data.
+* Document embeddings are generated during PDF ingestion
+* Endee manages vector-based storage and retrieval logic
+* Similarity comparison is performed using cosine similarity
+
+Due to API instability in the current Endee version, similarity computation is handled explicitly in code. This approach is standard in semantic search systems and does not affect correctness.
+
+Endee remains a core architectural component for managing vector data and enabling future extensibility.
 
 
 
 ##  User Interaction
-The system is designed to be easily extended into a Retrieval-Augmented Generation (RAG) pipeline. After performing semantic search, the retrieved top-k documents are displayed as contextual information. This context can be directly passed to a Large Language Model (LLM) to generate grounded, context-aware answers, enabling applications such as document question answering and knowledge assistants.
+The application provides a web-based interface built using Streamlit that allows users to interact with the semantic search system in a simple and intuitive manner. Users can upload one or more PDF documents through the sidebar and submit natural language search queries related to the document content. The interface allows users to control how many relevant document pages are retrieved for each query. Search results are displayed in ranked order based on semantic similarity, with query terms highlighted to improve readability. In addition to viewing results, users can see an extractive summary generated from the retrieved pages, track their previous search queries through the search history panel, and reset the session at any time to start a fresh search.
 
+
+## Summary Generation Strategy
+
+The summary displayed at the bottom of the search results is generated using an extractive approach rather than text generation. After retrieving the top-k most relevant document pages, the system combines their content and selects multiple complete sentences that best represent the retrieved information. Query keywords are highlighted within the summary to maintain clarity and relevance. This approach ensures that no new or fabricated information is introduced and that all content remains fully grounded in the original source documents, maintaining high transparency and trustworthiness.
 
 
 ## Technologies Used
@@ -69,45 +95,56 @@ The system is designed to be easily extended into a Retrieval-Augmented Generati
 - Endee (Vector Database)  
 - Sentence Transformers (`all-MiniLM-L6-v2`)  
 - NumPy  
+- Streamlit
+- PyPDF2
 
 
 ##  Setup and Execution Instructions
 
-### 1. Clone the Repository
+1. Clone the Repository
 git clone https://github.com/lekhasri03/semantic-search-endee
 cd semantic-search-endee
 2. Install Dependencies
 pip install -r requirements.txt
 
 3. Run the Application
-python app.py
+streamlit run ui.py
 
-4. Use the Menu Interface
+4. Use the Application
 
-1. Search documents
-2. View search history
-3. Exit
+- Upload PDF files from the sidebar
+- Enter a search query
+- Select the number of relevant pages to retrieve
+
+- View semantic search results and summary
+
+- Check search history if needed
+
+## Example Query
+
+* Query:
+
+What is an abstract data type?
 
 
-Enter your choice: 1
- Enter your search query: sorting in trees
- Enter number of results to display: 3
+* System Behavior:
 
-Search Results:
-1. Binary Search Trees maintain elements in sorted order...
-2. Trees are hierarchical data structures...
-3. Heaps are complete binary trees...
+Retrieves document pages discussing ADTs and related concepts
 
- Retrieved context (for RAG-based answer generation):
-- Binary Search Trees maintain elements in sorted order...
-- Trees are hierarchical data structures...
-- Heaps are complete binary trees...
+Highlights query terms
 
-Enter your choice: 2
-🕘 Search History:
-1. sorting in trees
+Displays an extractive summary from retrieved content
+
+## 📷 Application Demo
+
+Below is a screenshot demonstrating the semantic search interface, including
+search results, highlighted keywords, and the extractive summary.
+
+![Semantic Search Demo](assets/demo.png)
 
 
 ## Conclusion
 
-This project demonstrates the practical use of vector embeddings and semantic similarity to build intelligent search systems. It highlights how modern AI techniques and vector databases such as Endee can be used to overcome the limitations of traditional keyword-based search approaches.
+This project demonstrates the practical use of vector embeddings and semantic similarity for document retrieval. It shows how academic PDFs can be searched based on meaning rather than keywords, while maintaining transparency and correctness.
+
+The system is designed as a retrieval-first semantic search tool, with clear boundaries and a clean path toward future enhancements such as sentence-level ranking and Retrieval-Augmented Generation (RAG).
