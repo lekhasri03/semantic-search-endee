@@ -1,6 +1,29 @@
-Arrays are used to store multiple elements of the same data type.
-Stacks follow the Last In First Out (LIFO) principle.
-Queues follow the First In First Out (FIFO) principle.
-Linked lists consist of nodes connected using pointers.
-Binary search works only on sorted arrays.
-Hashing allows fast data retrieval using key-value pairs.
+Arrays are used to store multiple elements of the same data type in contiguous memory locations.
+Stacks follow the Last In First Out (LIFO) principle and are used in function calls and undo operations.
+Queues follow the First In First Out (FIFO) principle and are commonly used in scheduling algorithms.
+Linked lists consist of nodes connected using pointers and allow dynamic memory allocation.
+Binary search works only on sorted arrays and reduces time complexity to O(log n).
+Linear search checks each element one by one and works on both sorted and unsorted data.
+Hashing allows fast data retrieval using key-value pairs and provides average O(1) lookup time.
+A hash table stores data in an associative manner using hash functions.
+Trees are hierarchical data structures consisting of nodes with parent-child relationships.
+Binary trees allow each node to have at most two children.
+Binary Search Trees maintain elements in sorted order for efficient searching.
+Heaps are complete binary trees commonly used to implement priority queues.
+Graphs consist of vertices and edges and are used to represent networks.
+Depth First Search explores graph nodes by going as deep as possible before backtracking.
+Breadth First Search explores graph nodes level by level.
+Dynamic programming solves problems by breaking them into overlapping subproblems.
+Greedy algorithms make locally optimal choices to find a global solution.
+Recursion is a technique where a function calls itself to solve a problem.
+Object-Oriented Programming is based on concepts like classes, objects, inheritance, and polymorphism.
+Encapsulation restricts direct access to data and improves security.
+Inheritance allows a class to acquire properties of another class.
+Polymorphism allows methods to behave differently based on the object calling them.
+Databases store structured data and support efficient querying.
+SQL is used to interact with relational databases using structured queries.
+Indexes improve database query performance by reducing search time.
+Operating Systems manage hardware resources and provide services to applications.
+Process scheduling determines the order in which processes are executed by the CPU.
+Deadlock occurs when processes wait indefinitely for resources held by each other.
+Virtual memory allows execution of processes that are not completely in physical memory.

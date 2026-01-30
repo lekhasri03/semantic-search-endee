@@ -4,10 +4,10 @@ import numpy as np
 # Try importing Endee safely
 try:
     from endee import Endee
-    endee_available = True
     db = Endee()
+    endee_available = True
     print("✅ Endee initialized")
-except Exception as e:
+except Exception:
     endee_available = False
     print("⚠️ Endee initialized with limited support")
 
@@ -29,33 +29,57 @@ stored_vectors = []
 for doc, vector in zip(documents, embeddings):
     stored_vectors.append((vector, doc))
 
-    # Use Endee only if add exists
     if endee_available and hasattr(db, "add"):
         try:
             db.add(vector=vector, metadata={"text": doc})
         except Exception:
-            pass  # Safe fallback
+            pass
 
-print("✅ Vectors prepared")
+print("✅ Vectors prepared successfully")
 
-# ---------------- SEMANTIC SEARCH ----------------
-
-query = input("\n🔍 Enter your search query: ")
-
-query_vector = model.encode(query, convert_to_numpy=True)
+# ---------------- UTILITY FUNCTIONS ----------------
 
 def cosine_similarity(a, b):
     return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))
 
-results = []
 
-for vector, text in stored_vectors:
-    score = cosine_similarity(query_vector, vector)
-    results.append((score, text))
+def semantic_search(query, top_k=2):
+    query_vector = model.encode(query, convert_to_numpy=True)
+    results = []
 
-# Sort by similarity
-results.sort(key=lambda x: x[0], reverse=True)
+    for vector, text in stored_vectors:
+        score = cosine_similarity(query_vector, vector)
+        results.append((score, text))
 
-print("\n📄 Search Results:")
-for i, (score, text) in enumerate(results[:2], start=1):
-    print(f"{i}. {text}  (score: {score:.3f})")
+    results.sort(key=lambda x: x[0], reverse=True)
+    return results[:top_k]
+
+
+# ---------------- CLI MENU ----------------
+
+def show_menu():
+    print("\n==============================")
+    print(" Semantic Search System ")
+    print("==============================")
+    print("1. Search documents")
+    print("2. Exit")
+    print("==============================")
+
+while True:
+    show_menu()
+    choice = input("Enter your choice (1/2): ").strip()
+
+    if choice == "1":
+        query = input("\n🔍 Enter your search query: ").strip()
+        results = semantic_search(query)
+
+        print("\n📄 Search Results:")
+        for i, (score, text) in enumerate(results, start=1):
+            print(f"{i}. {text}  (score: {score:.3f})")
+
+    elif choice == "2":
+        print("\n👋 Exiting Semantic Search. Thank you!")
+        break
+
+    else:
+        print("\n❌ Invalid choice. Please enter 1 or 2.")
