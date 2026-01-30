@@ -19,7 +19,7 @@ This project solves the problem by using semantic similarity, allowing the syste
 
 ---
 
-## 🧠 Solution Approach
+## Solution Approach
 The solution uses **vector embeddings** to represent text meaning numerically.  
 Similarity between vectors is calculated to retrieve the most relevant documents.
 
@@ -33,7 +33,7 @@ Similarity between vectors is calculated to retrieve the most relevant documents
 
 ---
 
-## 🏗️ System Design / Architecture
+##  System Design / Architecture
 
 The system follows a simple and modular architecture where vector embeddings are the core component. Text documents are first converted into numerical embeddings using a transformer-based model. These embeddings are then handled using Endee as a vector database abstraction. When a user provides a search query, the query is converted into an embedding and compared with stored document embeddings using cosine similarity to retrieve the most relevant results.
 
@@ -54,13 +54,13 @@ Relevant Documents
 
 ---
 
-## 🗄️ How Endee is Used
+## How Endee is Used
 
 Endee is used as the vector database abstraction in this project. It is responsible for managing vector-based data within the system. Document embeddings are prepared and stored through Endee during the data ingestion phase. Due to API instability in the current version of Endee, similarity computation is performed using cosine similarity, which is a standard and widely accepted method in semantic search systems. Despite this, Endee remains a core component of the architecture for handling vector data.
 
 ---
 
-## ⚙️ Technologies Used
+##  Technologies Used
 
 - Python  
 - Endee (Vector Database)  
@@ -69,20 +69,20 @@ Endee is used as the vector database abstraction in this project. It is responsi
 
 ---
 
-## ▶️ Setup and Execution Instructions
+##  Setup and Execution Instructions
 ```bash
 
-1️⃣ Clone the Repository
+1. Clone the Repository
 
 git clone <your-github-repository-url>
 cd semantic-search-endee
-2️⃣ Install Dependencies
+2. Install Dependencies
 pip install -r requirements.txt
 
-3️⃣ Run the Application
+3. Run the Application
 python app.py
 
-4️⃣ Enter a Search Query
+4. Enter a Search Query
 
 Example:
 
